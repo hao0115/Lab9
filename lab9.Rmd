@@ -1,0 +1,108 @@
+---
+title: "lab9"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# 1.Solution for the Problem 1 from Activity 9
+```{r}
+library(microbenchmark)
+odd_count = function(x) {
+  odd_num = 0
+  for (i in 1:length(x)) {
+    if (x[i] %% 2 == 1) odd_num = odd_num + 1
+  }
+  return(odd_num)
+}
+
+odd_count1 <- function(x){
+  odd_sum1 = sum(x%%2 == 1)
+  return(odd_sum1)
+}
+
+x <- c(1:100)
+microbenchmark(odd_count(x),odd_count1(x))
+```
+
+# 2.Modify the sorting function (sort_vec) from “Assignment 8” (problem 3) 
+```{r}
+sort_vec = function(x, ascending) {
+  if (length(x) < 2) return (x)
+  if (ascending == TRUE) {
+    for(last in 1:(length(x)-1)) {
+      for(first in 1:(length(x)-last)) {
+        if(x[first] > x[first + 1]) {
+          temp = x[first]
+          x[first] = x[first + 1]
+          x[first + 1] = temp
+        }
+      }
+    }
+  }
+  
+  
+  if (ascending == FALSE) {
+    for(last in 1:(length(x)-1)) {
+      for(first in 1:(length(x)-last)) {
+        if(x[first] < x[first + 1]) {
+          temp = x[first]
+          x[first] = x[first + 1]
+          x[first + 1] = temp
+        }
+      }
+    }
+  }
+  return(x)
+}
+
+sort_vec(c(3,1,2,4), ascending = FALSE)
+sort_vec(c(5,4,3,2,1), ascending = TRUE)
+
+
+```
+
+
+# 3.Compare system.time
+```{r}
+# preallocate the data with step 1 followed by step -1, thus it will be a vector with 0 & 1 cycles.
+N1 = 1000
+data_series1 = 0
+t1000_1 <- system.time({for (i in 2:N1){
+  data_series1[i] = data_series1[i-1] + sample(c(-1, 1), 1)
+  }
+})
+
+t1000_2 <- system.time(as.vector(replicate(N1, c(0,1))))
+
+t1000_1
+t1000_2
+
+
+N2 = 10000
+data_series2 = 0
+t10000_1 <- system.time({for (i in 2:N2){
+  data_series2[i] = data_series2[i-1] + sample(c(-1, 1), 1)
+  }
+})
+t10000_2 <- system.time(as.vector(replicate(N2, c(0,1))))
+
+t10000_1
+t10000_2
+
+
+N3 = 1000000
+data_series3 = 0
+t1000000_1 <- system.time({for (i in 2:N3){
+  data_series3[i] = data_series3[i-1] + sample(c(-1, 1), 1)
+  }
+})
+t1000000_2 <- system.time(as.vector(replicate(N3, c(0,1))))
+
+t1000000_1
+t1000000_2
+
+```
+
